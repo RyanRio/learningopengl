@@ -3,6 +3,7 @@
 #include "iostream"
 #include "memory"
 #include <string>
+#include <math.h>
 
 int GlGraphicsProgram::init() {
     // glfw: initialize and configure
@@ -36,12 +37,8 @@ int GlGraphicsProgram::init() {
     glGenBuffers(1, &m_EBO);
     glGenVertexArrays(2, m_VAOs);
 
-    // compile shaders
-    ShaderProgramBuilder builder;
-    builder.addFragmentShader("C:\\Users\\therm\\Documents\\learnopengl\\shaders\\fragmentShader.frag");
-    builder.addVertexShader("C:\\Users\\therm\\Documents\\learnopengl\\shaders\\vertexShader.vert");
-    m_shaderProgram = builder.buildShaderProgram();
-    glUseProgram(m_shaderProgram);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     
     return 0;
 }
@@ -62,12 +59,18 @@ void GlGraphicsProgram::setBackground(float red, float green, float blue, float 
     glClearColor(red, green, blue, alpha);
 }
 
+void GlGraphicsProgram::useShaderProgram(ShaderProgram *prog) {
+    m_shaderProgram = prog;
+    m_shaderProgram->use();
+}
+
 void GlGraphicsProgram::render(RenderChoice choice) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // 4 draw the object
     // glUseProgram(m_shaderProgram);
+
     if (choice == RenderChoice::TRIANGLE) {
         glBindVertexArray(m_VAOs[0]);
         glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -87,10 +90,14 @@ void GlGraphicsProgram::setTriangle(const Triangle &triangle) {
     int t = 0;
     for (int v = 0; v < 3; v++) {
         const Point& p = triangle.ps[v];
-        int r = v * 3;
+        const Color& c = triangle.cs[v];
+        int r = v * 6;
         triangleVertices[r] = p.x;
         triangleVertices[r + 1] = p.y;
         triangleVertices[r + 2] = 0.0f;
+        triangleVertices[r + 3] = c.r;
+        triangleVertices[r + 4] = c.g;
+        triangleVertices[r + 5] = c.b;
     }
     
     // ..:: triangle Initialization code (done once (unless your object frequently changes)) :: ..
@@ -100,8 +107,12 @@ void GlGraphicsProgram::setTriangle(const Triangle &triangle) {
     glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
     // 3. then set the vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // unbind the vbo from array buffer, glVertexAttribPointer registered VBO as the vertex attribute's bound VBO so can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -115,10 +126,14 @@ void GlGraphicsProgram::setRectangle(const Rectangle &rect) {
     int t = 0;
     for (int v = 0; v < 4; v++) {
         const Point& p = rect.ps[v];
-        int r = v * 3;
+        const Color& c = rect.cs[v];
+        int r = v * 6;
         rectVertices[r] = p.x;
         rectVertices[r + 1] = p.y;
         rectVertices[r + 2] = 0.0f;
+        rectVertices[r + 3] = c.r;
+        rectVertices[r + 4] = c.g;
+        rectVertices[r + 5] = c.b;
     }
     
     // ..:: Initialization code :: ..
@@ -131,8 +146,12 @@ void GlGraphicsProgram::setRectangle(const Rectangle &rect) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     // 4. then set the vertex attributes pointers
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -143,15 +162,13 @@ void GlGraphicsProgram::pollEvents() {
     glfwPollEvents();
 }
 
-void GlGraphicsProgram::processInput()
-{
+void GlGraphicsProgram::processInput() {
     // query GLFW whether relevant keys are pressed/released this frame and react accordingly
     if(glfwGetKey(m_window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(m_window, true);
 }
 
-void GlGraphicsProgram::framebufferSizeCallback(GLFWwindow* window, int width, int height)
-{
+void GlGraphicsProgram::framebufferSizeCallback(GLFWwindow* window, int width, int height) {
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
