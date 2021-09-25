@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.11-3.18)
 
-project(main)
+add_executable(main)
 
-add_executable(main main.cpp glad.c)
+target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/include)
+
+target_sources(main PRIVATE
+                main.cpp
+                GlGraphicsProgram.cpp
+                ShaderProgramBuilder.cpp
+                glad.c)
 
 target_link_libraries(main glfw)
 
