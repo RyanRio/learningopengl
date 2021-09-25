@@ -4,6 +4,7 @@
             "name": "GCC",
             "includePath": [
                 "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
                 "${workspaceFolder}/external/glfw/include/",
                 "${workspaceFolder}/external",
                 "C:/msys64/mingw64/include/**",

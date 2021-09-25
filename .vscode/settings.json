@@ -2,6 +2,8 @@
     "cmake.configureOnOpen": false,
     "cmake.generator": "MinGW Makefiles",
     "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnEdit": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/",
     "files.associations": {
         "iostream": "cpp",
         "array": "cpp",
@@ -50,6 +52,12 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp"
     }
 }
