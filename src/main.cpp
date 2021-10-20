@@ -2,9 +2,37 @@
 #include <GLFW/glfw3.h>
 #include "GlGraphicsProgram.h"
 #include <iostream>
+#include <KTX/ktx.h>
 
 int main()
 {
+    ktxTexture *texture;
+    KTX_error_code result;
+    ktx_size_t offset;
+    ktx_uint8_t *image;
+    ktx_uint32_t level, layer, faceSlice;
+
+    result = ktxTexture_CreateFromNamedFile(
+        "Assets/mytex3d.ktx", KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &texture);
+
+    // Retrieve information about the texture from fields in the ktxTexture
+    // such as:
+    ktx_uint32_t numLevels = texture->numLevels;
+    ktx_uint32_t baseWidth = texture->baseWidth;
+    ktx_bool_t isArray = texture->isArray;
+
+    // Retrieve a pointer to the image for a specific mip level, array layer
+    // & face or depth slice.
+    level = 1;
+    layer = 0;
+    faceSlice = 3;
+    result =
+        ktxTexture_GetImageOffset(texture, level, layer, faceSlice, &offset);
+    image = ktxTexture_GetData(texture) + offset;
+    // ...
+    // Do something with the texture image.
+    // ...
+    ktxTexture_Destroy(texture);
     
     GlGraphicsProgram prog(600, 800);
     prog.init();
@@ -15,8 +43,8 @@ int main()
     // int vertexColorLocation = glGetUniformLocation(m_shaderProgram, "ourColor");
     // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); example of setting uniform
     ShaderProgramBuilder builder;
-    builder.addFragmentShader("C:\\Users\\therm\\Documents\\learnopengl\\shaders\\colorFromVS.frag");
-    builder.addVertexShader("C:\\Users\\therm\\Documents\\learnopengl\\shaders\\vertexShader.vert");
+    builder.addFragmentShader("C:\\Users\\therm\\source\\repos\\learnopengl\\shaders\\colorFromVS.frag");
+    builder.addVertexShader("C:\\Users\\therm\\source\\repos\\learnopengl\\shaders\\vertexShader.vert");
     ShaderProgram *shaderProg = builder.buildShaderProgram();
     prog.useShaderProgram(shaderProg);
     shaderProg->setFloat("alpha", 0.5f); // Need to use shader program before setting uniforms

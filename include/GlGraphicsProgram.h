@@ -98,20 +98,20 @@ private:
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 
     // triangleVertices to send to vertex buffer (with color data in between each vertex.. v1, c1, v2, c2, ...)
-    float triangleVertices[18];
+    float triangleVertices[18] = {};
 
     // rectangle vertices to send to vertex buffer
-    float rectVertices[24];
+    float rectVertices[24] = {};
     // indices of unique vertices of the rectangle.. 1 index per vertex "drawn"
-    unsigned int indices[6];
+    unsigned int indices[6] = {};
 
-    GLuint m_VBOs[2];
+    GLuint m_VBOs[2] = {};
 
-    GLuint m_VAOs[2];
+    GLuint m_VAOs[2] = {};
 
-    GLuint m_EBO;
+    GLuint m_EBO = 0;
 
-    ShaderProgram* m_shaderProgram; // the shader program in use
+    ShaderProgram* m_shaderProgram = nullptr; // the shader program in use
 
 };
 
