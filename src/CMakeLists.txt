@@ -16,10 +16,9 @@ set_target_properties(ktx PROPERTIES
 target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 target_sources(main PRIVATE
-                main.cpp
                 GlGraphicsProgram.cpp
                 ShaderProgramBuilder.cpp
-                glad.c)
+                glad.c "KTXTexture.cpp" "main.cpp")
 
 target_link_libraries(main glfw3 ktx) # also adds the required include path
 

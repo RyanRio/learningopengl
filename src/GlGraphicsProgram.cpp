@@ -15,7 +15,7 @@ int GlGraphicsProgram::init() {
 
     // glfw window creation
     // --------------------
-    m_window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+    m_window = glfwCreateWindow(m_width, m_height, "LearnOpenGL", NULL, NULL);
     if (m_window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -127,13 +127,18 @@ void GlGraphicsProgram::setRectangle(const Rectangle &rect) {
     for (int v = 0; v < 4; v++) {
         const Point& p = rect.ps[v];
         const Color& c = rect.cs[v];
-        int r = v * 6;
+        const Point &tp = rect.ts[v];
+        int r = v * 8;
         rectVertices[r] = p.x;
         rectVertices[r + 1] = p.y;
         rectVertices[r + 2] = 0.0f;
+
         rectVertices[r + 3] = c.r;
         rectVertices[r + 4] = c.g;
         rectVertices[r + 5] = c.b;
+
+        rectVertices[r + 6] = tp.x;
+        rectVertices[r + 7] = tp.y;
     }
     
     // ..:: Initialization code :: ..
@@ -147,11 +152,15 @@ void GlGraphicsProgram::setRectangle(const Rectangle &rect) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     // 4. then set the vertex attributes pointers
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
+    // texture attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void *)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2); 
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

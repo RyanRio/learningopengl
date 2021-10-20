@@ -30,9 +30,6 @@ GLint ShaderProgram::getUniformLocation(const GLchar *name) const {
 }
 
 void ShaderProgramBuilder::addFragmentShader(std::string fileName) {
-    int success;
-    char infoLog[512];
-
     std::string fragmentShaderSource = readShaderFromFile(fileName);
     m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
     const char* fSource = fragmentShaderSource.c_str();
@@ -43,9 +40,6 @@ void ShaderProgramBuilder::addFragmentShader(std::string fileName) {
 }
 
 void ShaderProgramBuilder::addVertexShader(std::string fileName) {
-    int success;
-    char infoLog[512];
-
     std::string vertexShaderSource = readShaderFromFile(fileName);
 
     m_vertexShader = glCreateShader(GL_VERTEX_SHADER);

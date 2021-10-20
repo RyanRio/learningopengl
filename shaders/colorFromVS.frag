@@ -1,10 +1,12 @@
 #version 330 core
-out vec4 FragColor;  
+out vec4 FragColor;
+  
 in vec3 ourColor;
+in vec2 TexCoord;
 
-uniform float alpha; // we set this variable in the OpenGL code.
+uniform sampler2D ourTexture;
 
 void main()
 {
-    FragColor = vec4(ourColor, alpha);
+    FragColor = texture(ourTexture, TexCoord);
 }
