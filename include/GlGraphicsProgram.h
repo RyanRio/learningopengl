@@ -6,10 +6,6 @@
 #include "ShaderProgramBuilder.h"
 #include <string>
 
-// settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
-
 class Point {
 public:
     Point(float x, float y): x(x), y(y) {}
@@ -54,9 +50,15 @@ public:
 class Rectangle {
 public:
     // top right, bottom right, bottom left, top left
-    Rectangle(const Point& tr, const Color& trc, const Point& br, const Color& brc, const Point& bl, const Color& blc, const Point& tl, const Color& tlc): ps{tr, br, bl, tl}, cs{trc, brc, blc, tlc} {}
-    const Point ps[4];
-    const Color cs[4];
+  Rectangle(const Point &tr, const Point &trt, const Color &trc,
+            const Point &br, const Point &brt, const Color &brc,
+            const Point &bl, const Point &blt, const Color &blc,
+            const Point &tl, const Point &tlt, const Color &tlc)
+      : ps{tr, br, bl, tl}, ts {trt, brt, blt, tlt}
+  , cs{trc, brc, blc, tlc} {}
+    const Point ps[4]; // vertex spatial coords
+    const Point ts[4]; // vertex texture coords
+    const Color cs[4]; // vertex color values
     unsigned int indices[6] = {0, 1, 3, 1, 2, 3};
 
     Rectangle(Rectangle const &) = delete;
@@ -101,7 +103,7 @@ private:
     float triangleVertices[18] = {};
 
     // rectangle vertices to send to vertex buffer
-    float rectVertices[24] = {};
+    float rectVertices[32] = {};
     // indices of unique vertices of the rectangle.. 1 index per vertex "drawn"
     unsigned int indices[6] = {};
 

@@ -1,40 +1,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "GlGraphicsProgram.h"
+#include "KTXTexture.h"
 #include <iostream>
 #include <KTX/ktx.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 int main()
 {
-    ktxTexture *texture;
-    KTX_error_code result;
-    ktx_size_t offset;
-    ktx_uint8_t *image;
-    ktx_uint32_t level, layer, faceSlice;
-
-    result = ktxTexture_CreateFromNamedFile(
-        "Assets/mytex3d.ktx", KTX_TEXTURE_CREATE_LOAD_IMAGE_DATA_BIT, &texture);
-
-    // Retrieve information about the texture from fields in the ktxTexture
-    // such as:
-    ktx_uint32_t numLevels = texture->numLevels;
-    ktx_uint32_t baseWidth = texture->baseWidth;
-    ktx_bool_t isArray = texture->isArray;
-
-    // Retrieve a pointer to the image for a specific mip level, array layer
-    // & face or depth slice.
-    level = 1;
-    layer = 0;
-    faceSlice = 3;
-    result =
-        ktxTexture_GetImageOffset(texture, level, layer, faceSlice, &offset);
-    image = ktxTexture_GetData(texture) + offset;
-    // ...
-    // Do something with the texture image.
-    // ...
-    ktxTexture_Destroy(texture);
-    
-    GlGraphicsProgram prog(600, 800);
+        
+    GlGraphicsProgram prog(800, 600);
     prog.init();
     // bringing shader program out here... kind of awkward since we specifically have to initialize it now up here
     // compile shaders
@@ -54,18 +30,39 @@ int main()
     Triangle mainTriangle({0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {-0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.5f}, {0.0f, 0.0f, 1.0f});
 
     // create tr, br, bl, tl points now
-    Rectangle mainRectangle({0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}, {0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {-0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f});
+    Rectangle mainRectangle({0.5f, 0.5f}, {1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, // top right
+                            {0.5f, -0.5f}, {1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, // bottom right
+                            {-0.5f, -0.5f}, {0.0f, 0.0f}, {0.0f, 0.0f, 1.0f}, // bottom left
+                            {-0.5f, 0.5f}, {0.0f, 1.0f}, {1.0f, 1.0f, 1.0f}); // top left
 
     prog.setTriangle(mainTriangle);
     prog.setRectangle(mainRectangle);
 
+    KTXTexture textureContainer("Assets/container.ktx");
+    KTX_error_code result;
+    GLenum target, glerror;
+
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound
+    // texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    result = ktxTexture_GLUpload(textureContainer.m_texture, &texture, &target, &glerror);
+    ktxTexture_Destroy(textureContainer.m_texture);
+
     while (!prog.closed()) {
         prog.processInput();
 
+        glBindTexture(GL_TEXTURE_2D, texture);
         prog.render(RenderChoice::RECTANGLE);
 
         prog.pollEvents();
-    }
-    
+    }  
+
     return prog.destroy();
 }
