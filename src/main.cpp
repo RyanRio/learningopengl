@@ -19,11 +19,11 @@ int main()
     // int vertexColorLocation = glGetUniformLocation(m_shaderProgram, "ourColor");
     // glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f); example of setting uniform
     ShaderProgramBuilder builder;
-    builder.addFragmentShader("C:\\Users\\therm\\source\\repos\\learnopengl\\shaders\\colorFromVS.frag");
-    builder.addVertexShader("C:\\Users\\therm\\source\\repos\\learnopengl\\shaders\\vertexShader.vert");
+    builder.addFragmentShader("shaders\\colorFromVS.frag");
+    builder.addVertexShader("shaders\\vertexShader.vert");
     ShaderProgram *shaderProg = builder.buildShaderProgram();
     prog.useShaderProgram(shaderProg);
-    shaderProg->setFloat("alpha", 0.5f); // Need to use shader program before setting uniforms
+    // shaderProg->setFloat("alpha", 0.5f); // Need to use shader program before setting uniforms
 
     prog.setBackground(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -58,7 +58,6 @@ int main()
     while (!prog.closed()) {
         prog.processInput();
 
-        glBindTexture(GL_TEXTURE_2D, texture);
         prog.render(RenderChoice::RECTANGLE);
 
         prog.pollEvents();
