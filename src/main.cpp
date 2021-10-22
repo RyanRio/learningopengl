@@ -38,6 +38,11 @@ int main()
     prog.setTriangle(mainTriangle);
     prog.setRectangle(mainRectangle);
 
+    int num_formats;
+    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &num_formats);
+    int *formats = (int*)malloc(sizeof(int) * num_formats);
+    glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats);
+
     KTXTexture textureContainer("Assets/container.ktx");
     KTX_error_code result;
     GLenum target, glerror;
