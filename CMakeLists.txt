@@ -25,6 +25,9 @@ add_custom_command(OUTPUT
     COMMAND ${CMAKE_COMMAND} -E copy_directory 
             ${CMAKE_SOURCE_DIR}/Assets
             ${CMAKE_CURRENT_SOURCE_DIR}/bin/Assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory 
+            ${CMAKE_SOURCE_DIR}/shaders
+            ${CMAKE_CURRENT_SOURCE_DIR}/bin/shaders
     DEPENDS main
 )
 # Create target which consume the command via DEPENDS.
