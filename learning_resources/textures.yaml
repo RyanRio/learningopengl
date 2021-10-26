@@ -1,0 +1,6 @@
+ktx:
+    https://github.khronos.org/KTX-Software/libktx/index.html: "The base ktx library doxygen docs"
+    http://richg42.blogspot.com/2018/05/basis-universal-gpu-texture-format.html: "about the basis universal format - explained the concept of transcoding"
+    https://github.khronos.org/KTX-Specification/: the KTX spec, also contains the mapping of vkFormat to OpenGL/Vulkan enum values
+https://developer.nvidia.com/astc-texture-compression-for-game-assets: NVIDIA blog on texture compression
+https://loaders.gl/modules/textures/docs/using-compressed-textures: WebGL library doc page that explains compressed textures in a simpler format

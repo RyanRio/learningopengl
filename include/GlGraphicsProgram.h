@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 #include "ShaderProgramBuilder.h"
 #include <string>
+#include <vector>
 
 class Point {
 public:
@@ -98,6 +99,9 @@ public:
     static void DebugOutputToFile(GLenum source, GLenum type, GLuint id,
                            GLenum severity, const GLchar *message);
 
+    static int numCompressedFormats();
+    static std::vector<std::string> availableCompressedFormats();
+
 private:
     GLuint m_width, m_height;
     GLFWwindow *m_window;
@@ -119,7 +123,6 @@ private:
     GLuint m_EBO = 0;
 
     ShaderProgram* m_shaderProgram = nullptr; // the shader program in use
-
 };
 
 #endif
