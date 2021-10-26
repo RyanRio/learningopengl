@@ -1,17 +1,68 @@
-#include "GlGraphicsProgram.h"
+﻿#include "GlGraphicsProgram.h"
 #include "ShaderProgramBuilder.h"
 #include "iostream"
 #include "memory"
 #include <string>
 #include <math.h>
 
+void GlGraphicsProgram::DebugCallback(GLenum source, GLenum type, GLuint id,
+                                      GLenum severity, GLint length,
+                                      const GLchar *message,
+                                      const GLvoid *userParam​) {
+    GlGraphicsProgram::DebugOutputToFile(source, type, id, severity, message);
+}
+
+void GlGraphicsProgram::DebugOutputToFile(GLenum source, GLenum type, GLuint id,
+                                          GLenum severity,
+                                          const GLchar *message) {
+    FILE *f;
+    f = fopen("Debug.txt", "a");
+    if (f){
+        char debSource[16], debType[20], debSev[7];
+        if (source == GL_DEBUG_SOURCE_API_ARB)
+            strcpy(debSource, "OpenGL");
+        else if (source == GL_DEBUG_SOURCE_WINDOW_SYSTEM_ARB)
+            strcpy(debSource, "Windows");
+        else if (source == GL_DEBUG_SOURCE_SHADER_COMPILER_ARB)
+            strcpy(debSource, "Shader Compiler");
+        else if (source == GL_DEBUG_SOURCE_THIRD_PARTY_ARB)
+            strcpy(debSource, "Third Party");
+        else if (source == GL_DEBUG_SOURCE_APPLICATION_ARB)
+            strcpy(debSource, "Application");
+        else if (source == GL_DEBUG_SOURCE_OTHER_ARB)
+            strcpy(debSource, "Other");
+        if (type == GL_DEBUG_TYPE_ERROR_ARB)
+            strcpy(debType, "Error");
+        else if (type == GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR_ARB)
+            strcpy(debType, "Deprecated behavior");
+        else if (type == GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR_ARB)
+            strcpy(debType, "Undefined behavior");
+        else if (type == GL_DEBUG_TYPE_PORTABILITY_ARB)
+            strcpy(debType, "Portability");
+        else if (type == GL_DEBUG_TYPE_PERFORMANCE_ARB)
+            strcpy(debType, "Performance");
+        else if (type == GL_DEBUG_TYPE_OTHER_ARB)
+            strcpy(debType, "Other");
+        if (severity == GL_DEBUG_SEVERITY_HIGH_ARB)
+            strcpy(debSev, "High");
+        else if (severity == GL_DEBUG_SEVERITY_MEDIUM_ARB)
+            strcpy(debSev, "Medium");
+        else if (severity == GL_DEBUG_SEVERITY_LOW_ARB)
+            strcpy(debSev, "Low");
+        fprintf(f, "Source:%s\tType:%s\tID:%d\tSeverity:%s\tMessage:%s\n", debSource, debType, id, debSev, message);
+        fclose(f);
+    }
+}
+
+
 int GlGraphicsProgram::init() {
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, 1);
 
     // glfw window creation
     // --------------------
@@ -32,6 +83,8 @@ int GlGraphicsProgram::init() {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    glDebugMessageCallbackARB(&GlGraphicsProgram::DebugCallback, NULL);
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS_ARB);
 
     glGenBuffers(2, m_VBOs);
     glGenBuffers(1, &m_EBO);
@@ -39,6 +92,8 @@ int GlGraphicsProgram::init() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // glDebugMessageInsertARB(GL_DEBUG_SOURCE_APPLICATION_ARB, GL_DEBUG_TYPE_ERROR_ARB, 1U, GL_DEBUG_SEVERITY_HIGH_ARB, 17, "The end is near!");
     
     return 0;
 }
