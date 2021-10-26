@@ -93,6 +93,11 @@ public:
     // set the rectangle that this graphics program draws
     void setRectangle(const Rectangle &rect);
 
+    static void APIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLint length,const GLchar *message,const GLvoid *userParam);
+
+    static void DebugOutputToFile(GLenum source, GLenum type, GLuint id,
+                           GLenum severity, const GLchar *message);
+
 private:
     GLuint m_width, m_height;
     GLFWwindow *m_window;

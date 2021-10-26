@@ -4,5 +4,5 @@
 class KTXTexture {
   public:
     KTXTexture(std::string file);
-    ktxTexture *m_texture = nullptr;
+    ktxTexture2 *m_texture = nullptr;
 };
