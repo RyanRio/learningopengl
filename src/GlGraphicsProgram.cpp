@@ -78,8 +78,7 @@ int GlGraphicsProgram::init() {
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
@@ -236,4 +235,22 @@ void GlGraphicsProgram::framebufferSizeCallback(GLFWwindow* window, int width, i
     // make sure the viewport matches the new window dimensions; note that width and 
     // height will be significantly larger than specified on retina displays.
     glViewport(0, 0, width, height);
+}
+
+int GlGraphicsProgram::numCompressedFormats() {
+    int s;
+    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &s);
+    return s;
+}
+
+std::vector<std::string> GlGraphicsProgram::availableCompressedFormats() {
+    int nFormats = numCompressedFormats();
+    int* formats = new int[nFormats];
+    glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats);
+    for (int i = 0; i < nFormats; i++) {
+        std::cout << std::hex << formats[i] << std::endl;
+    }
+    
+    std::vector<std::string> s;
+    return s;
 }

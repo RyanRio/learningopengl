@@ -8,6 +8,6 @@ KTXTexture::KTXTexture(string file) {
         file.c_str(), KTX_TEXTURE_CREATE_NO_FLAGS, (ktxTexture **)&m_texture);
 
     if (ktxTexture2_NeedsTranscoding(m_texture)) {
-        result = ktxTexture2_TranscodeBasis(m_texture, KTX_TTF_BC3_RGBA, 0);
+        result = ktxTexture2_TranscodeBasis(m_texture, KTX_TTF_BC7_RGBA, 0);
     }
 }

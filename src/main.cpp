@@ -7,6 +7,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#pragma warning(disable : 4996)
+
 bool hasExtension(std::string extension) {
     int num_extensions;
     glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions);
@@ -39,7 +41,7 @@ int main()
     ShaderProgramBuilder builder;
     builder.addFragmentShader("shaders\\colorFromVS.frag");
     builder.addVertexShader("shaders\\vertexShader.vert");
-    ShaderProgram *shaderProg = builder.buildShaderProgram();
+    ShaderProgram* shaderProg = builder.buildShaderProgram();
     prog.useShaderProgram(shaderProg);
     // shaderProg->setFloat("alpha", 0.5f); // Need to use shader program before setting uniforms
 
@@ -56,18 +58,15 @@ int main()
     prog.setTriangle(mainTriangle);
     prog.setRectangle(mainRectangle);
 
-    int num_formats;
-    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &num_formats);
-
-
-    KTXTexture textureContainer("Assets/awesomeface.ktx2");
+    KTXTexture faceTexture("Assets/awesomeface.ktx2");
+    KTXTexture containerTexture("Assets/container.ktx2");
     KTX_error_code result;
     GLenum target;
     GLenum glerror = GL_NO_ERROR;
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    unsigned int texture1;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
     // set the texture wrapping/filtering options (on the currently bound
     // texture object)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -75,8 +74,45 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
-    result = ktxTexture_GLUpload((ktxTexture*)textureContainer.m_texture, &texture, &target, &glerror);
-    ktxTexture_Destroy((ktxTexture *)textureContainer.m_texture);
+    result = ktxTexture_GLUpload((ktxTexture*)containerTexture.m_texture, &texture1, &target, &glerror);
+    ktxTexture_Destroy((ktxTexture*)containerTexture.m_texture);
+
+    unsigned int texture2;
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    // set the texture wrapping/filtering options (on the currently bound
+    // texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    result = ktxTexture_GLUpload((ktxTexture*)faceTexture.m_texture, &texture2, &target, &glerror);
+    ktxTexture_Destroy((ktxTexture*)faceTexture.m_texture);
+
+    GlGraphicsProgram::availableCompressedFormats();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+
+    shaderProg->setInt("texture2", 1);
+    int bytes;
+    int compressed;
+    int format;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED, &compressed);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &format);
+    if (compressed == 1) {
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_COMPRESSED_IMAGE_SIZE, &bytes);
+        std::cout << "compressed image size: " << bytes << std::endl;
+        std::cout << "compressed image format: " << format << std::endl;
+    }
+    else {
+        std::cout << "uncompressed image format: " << format << std::endl;
+    }
+    
+    
 
     while (!prog.closed()) {
         prog.processInput();
