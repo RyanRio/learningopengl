@@ -1,11 +1,16 @@
-﻿#include <glad/glad.h>
+﻿// graphics imports
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "GlGraphicsProgram.h"
-#include "KTXTexture.h"
-#include <iostream>
 #include <KTX/ktx.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+// std imports
+#include <iostream>
+// project imports
+#include "GlGraphicsProgram.h"
+#include "TextureLoader.h"
+#include "Texture.h"
+
 
 #pragma warning(disable : 4996)
 
@@ -58,46 +63,37 @@ int main()
     prog.setTriangle(mainTriangle);
     prog.setRectangle(mainRectangle);
 
-    KTXTexture faceTexture("Assets/awesomeface.ktx2");
-    KTXTexture containerTexture("Assets/container.ktx2");
-    KTX_error_code result;
-    GLenum target;
-    GLenum glerror = GL_NO_ERROR;
+    GLenum target, glerror;
+    ktxTexture2* awesomeFace = TextureLoader<ktxTexture2>::load("Assets/awesomeface.ktx2");
+    ktxTexture2* container = TextureLoader<ktxTexture2>::load("Assets/container.ktx2");
+    
+    Texture2D awesomeFaceTex;
+    Texture2D containerTex;
 
-    unsigned int texture1;
-    glGenTextures(1, &texture1);
-    glBindTexture(GL_TEXTURE_2D, texture1);
     // set the texture wrapping/filtering options (on the currently bound
     // texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
-    result = ktxTexture_GLUpload((ktxTexture*)containerTexture.m_texture, &texture1, &target, &glerror);
-    ktxTexture_Destroy((ktxTexture*)containerTexture.m_texture);
+    awesomeFaceTex.glUpload(awesomeFace);
 
-    unsigned int texture2;
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
     // set the texture wrapping/filtering options (on the currently bound
     // texture object)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    containerTex.setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    containerTex.setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    containerTex.setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    containerTex.setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // load and generate the texture
-    result = ktxTexture_GLUpload((ktxTexture*)faceTexture.m_texture, &texture2, &target, &glerror);
-    ktxTexture_Destroy((ktxTexture*)faceTexture.m_texture);
+    containerTex.glUpload(container);
 
-    GlGraphicsProgram::availableCompressedFormats();
+    awesomeFaceTex.setActive(0);
+    containerTex.setActive(1);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
+    awesomeFaceTex.bindShaderProgramSampler(*shaderProg, "texture2");
+    containerTex.bindShaderProgramSampler(*shaderProg, "texture1");
 
-    shaderProg->setInt("texture2", 1);
     int bytes;
     int compressed;
     int format;
@@ -111,8 +107,6 @@ int main()
     else {
         std::cout << "uncompressed image format: " << format << std::endl;
     }
-    
-    
 
     while (!prog.closed()) {
         prog.processInput();

@@ -18,7 +18,7 @@ target_include_directories(main PRIVATE ${PROJECT_SOURCE_DIR}/include)
 target_sources(main PRIVATE
                 GlGraphicsProgram.cpp
                 ShaderProgramBuilder.cpp
-                glad.c "KTXTexture.cpp" "main.cpp")
+                glad.c "TextureLoader.cpp" "main.cpp" "Texture.cpp")
 
 target_link_libraries(main glfw3 ktx) # also adds the required include path
 
