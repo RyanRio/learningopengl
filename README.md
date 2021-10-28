@@ -4,11 +4,9 @@ This repo will be divided into branches to reflect the tutorials on learnopengl.
 
 |Guide           |Branch          |Details                                                      |Extra Notes
 |:-----------    |:-----------    |:----------                                                  |:----------
-|[Hello Triangle]|[main]          | Nice Starting tutorial                                      |
 |[Shaders]       |[shaders]       | Starter tutorial for how to make a triangle and rectangle   |Made it simpler to create a rectangle/triangle and choose between the two
 |[Textures]      |[textures]      | Rendering textures on on the rectangle                      |I implemented textures using [KTX] texture features
 
-[Hello Triangle]: https://learnopengl.com/Getting-started/Hello-Triangle "Hello Triangle Guide"
 [Shaders]: https://learnopengl.com/Getting-started/Shaders "Shaders guide"
 [Textures]: https://learnopengl.com/Getting-started/Textures
 
