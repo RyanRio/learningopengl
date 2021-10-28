@@ -4,11 +4,11 @@ This repo will be divided into branches to reflect the tutorials on learnopengl.
 
 |Guide           |Branch          |Details                                                      |Extra Notes
 |:-----------    |:-----------    |:----------                                                  |:----------
-|[Shaders]       |[shaders]       | Starter tutorial for how to make a triangle and rectangle   |Made it simpler to create a rectangle/triangle and choose between the two
-|[Textures]      |[textures]      | Rendering textures on on the rectangle                      |I implemented textures using [KTX] texture features
+|[Shaders Guide]       |[shaders]       | Starter tutorial for how to make a triangle and rectangle   |Made it simpler to create a rectangle/triangle and choose between the two
+|[Textures Guide]      |[textures]      | Rendering textures on on the rectangle                      |I implemented textures using [KTX] texture features
 
-[Shaders]: https://learnopengl.com/Getting-started/Shaders "Shaders guide"
-[Textures]: https://learnopengl.com/Getting-started/Textures
+[Shaders Guide]: https://learnopengl.com/Getting-started/Shaders "Shaders guide"
+[Textures Guide]: https://learnopengl.com/Getting-started/Textures
 
 [main]: https://github.com/RyanRio/learningopengl/tree/main "main branch"
 [shaders]: https://github.com/RyanRio/learningopengl/tree/shaders "/tree/shaders"
