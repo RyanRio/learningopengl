@@ -4,17 +4,15 @@
             "name": "GCC",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/external/glfw/include/",
-                "${workspaceFolder}/external",
-                "C:/msys64/mingw64/include/**",
-                "C:/msys64/mingw64/include"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/external/include/GLFW",
+                "${workspaceFolder}/external"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:/msys64/mingw64/bin/g++.exe",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "windows-gcc-x64",

@@ -1,7 +1,10 @@
 {
     "cmake.configureOnOpen": false,
-    "cmake.generator": "MinGW Makefiles",
+    "cmake.generator": "Ninja",
     "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnEdit": true,
+    "cmake.sourceDirectory": "${workspaceFolder}/",
+    "clang-format.style": "file",
     "files.associations": {
         "iostream": "cpp",
         "array": "cpp",
@@ -50,6 +53,22 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "chrono": "cpp",
+        "codecvt": "cpp",
+        "ctime": "cpp",
+        "ratio": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "bitset": "cpp",
+        "condition_variable": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "mutex": "cpp",
+        "shared_mutex": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }
