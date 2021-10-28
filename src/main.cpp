@@ -14,6 +14,7 @@
 
 #pragma warning(disable : 4996)
 
+// TODO: better error and logging utilities
 bool hasExtension(std::string extension) {
     int num_extensions;
     glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions);
@@ -63,21 +64,11 @@ int main()
     prog.setTriangle(mainTriangle);
     prog.setRectangle(mainRectangle);
 
-    GLenum target, glerror;
     ktxTexture2* awesomeFace = TextureLoader<ktxTexture2>::load("Assets/awesomeface.ktx2");
     ktxTexture2* container = TextureLoader<ktxTexture2>::load("Assets/container.ktx2");
     
     Texture2D awesomeFaceTex;
     Texture2D containerTex;
-
-    // set the texture wrapping/filtering options (on the currently bound
-    // texture object)
-    awesomeFaceTex.setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
-    awesomeFaceTex.setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
-    awesomeFaceTex.setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    awesomeFaceTex.setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    // load and generate the texture
-    awesomeFaceTex.glUpload(awesomeFace);
 
     // set the texture wrapping/filtering options (on the currently bound
     // texture object)
@@ -88,11 +79,20 @@ int main()
     // load and generate the texture
     containerTex.glUpload(container);
 
-    awesomeFaceTex.setActive(0);
-    containerTex.setActive(1);
+    // set the texture wrapping/filtering options (on the currently bound
+    // texture object)
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_WRAP_S, GL_REPEAT);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_WRAP_T, GL_REPEAT);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    awesomeFaceTex.setTexParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    awesomeFaceTex.glUpload(awesomeFace);
 
-    awesomeFaceTex.bindShaderProgramSampler(*shaderProg, "texture2");
+    containerTex.setActive(0);
+    awesomeFaceTex.setActive(1);
+
     containerTex.bindShaderProgramSampler(*shaderProg, "texture1");
+    awesomeFaceTex.bindShaderProgramSampler(*shaderProg, "texture2");
 
     int bytes;
     int compressed;

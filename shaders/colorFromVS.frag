@@ -1,5 +1,4 @@
 #version 460 core
-#extension GL_OES_compressed_ETC1_RGB8_texture : enable
 
 out vec4 FragColor;
   
