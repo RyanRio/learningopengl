@@ -10,9 +10,12 @@
 #include "GlGraphicsProgram.h"
 #include "TextureLoader.h"
 #include "Texture.h"
+#include "lib/math.h"
 
 
 #pragma warning(disable : 4996)
+
+using namespace math;
 
 // TODO: better error and logging utilities
 bool hasExtension(std::string extension) {
@@ -32,7 +35,6 @@ bool hasExtension(std::string extension) {
 
 int main()
 {
-        
     GlGraphicsProgram prog(800, 600);
     prog.init();
     if (!hasExtension("GL_ARB_texture_compression_bptc")) {
@@ -108,7 +110,15 @@ int main()
         std::cout << "uncompressed image format: " << format << std::endl;
     }
 
+    math::Mat4Handle* handle = allocHandle();
+    math::Mat4Handle* handle1 = allocHandle();
+    math::Mat4Handle* handle2 = allocHandle();
+
+    glm::mat4 identity = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
     while (!prog.closed()) {
+        Transformation timedRotation{ (float)glfwGetTime(), glm::vec3(0.5, 1.0, 1.0f), glm::vec3(1.5f), glm::vec3(0.2f, 0.0f, 0.0f) };
+        applyTransformation(identity, timedRotation, *handle);
+        shaderProg->setMat4("transform", glm::value_ptr(handle->matrix));
         prog.processInput();
 
         prog.render(RenderChoice::RECTANGLE);

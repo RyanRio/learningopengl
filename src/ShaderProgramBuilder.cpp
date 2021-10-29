@@ -21,6 +21,10 @@ void ShaderProgram::setFloat(const std::string &name, float value) const {
     glUniform1f(getUniformLocation(name.c_str()), value); 
 }
 
+void ShaderProgram::setMat4(const std::string& name, float* data) const {
+    glUniformMatrix4fv(getUniformLocation("transform"), 1, GL_FALSE, data);
+}
+
 GLint ShaderProgram::getUniformLocation(const GLchar *name) const {
     int location = glGetUniformLocation(id, name);
     if (location == -1) {

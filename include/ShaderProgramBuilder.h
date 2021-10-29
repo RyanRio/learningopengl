@@ -21,6 +21,9 @@ public:
     void setInt(const std::string &name, int value) const;
     // set a single float uniform value
     void setFloat(const std::string &name, float value) const;
+    // set a single mat4 uniform value
+    void setMat4(const std::string &name, float* data) const;
+
 private:
     unsigned int id;
     // get the uniform location and print error if bad name
